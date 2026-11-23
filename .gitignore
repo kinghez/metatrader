@@ -1,0 +1,34 @@
+# MetaTrader 5 Compiled Binaries & Logs
+*.ex5
+*.crx
+*.log
+*.ini
+*.tpl
+*.dat
+*.tst
+*.opt
+
+# MT5 Strategy Tester Cache & Logs
+Tester/
+tester/
+logs/
+MQL5/Logs/
+MQL5/Files/Temp/
+
+# Python Virtual Environments & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.env
+venv/
+.venv/
+env/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# OS Metadata
+.DS_Store
+Thumbs.db
+desktop.ini
+
