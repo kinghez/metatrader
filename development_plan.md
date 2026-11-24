@@ -4,7 +4,7 @@
 **Project Codename:** `InstitutionalSMC`  
 **Target Platform:** MetaTrader 5 (MQL5) & Python (Research / ML)  
 **Architecture:** Modular, Event-Driven, Headless-First OOP Framework  
-**Current Status:** Phase 7 — Smart Money Concepts (OB, FVG, Liquidity)  
+**Current Status:** Phase 8 — Multi-Timeframe (MTF) Synchronization Engine  
 **Document Version:** 1.0.0  
 **Last Updated:** 2026-11-23  
 
@@ -122,7 +122,7 @@ metatrader/
 | **4** | `v0.5.0` | Headless Verification & Lightweight Visualization | Sprint 2 | [x] Completed | 2026-11-23 | KH |
 | **5** | `v0.6.0` | Fast-Track Execution Baseline (Prototype EA) | Sprint 3 | [x] Completed | 2026-11-23 | KH |
 | **6** | `v0.7.0` | Support & Resistance / Dynamic Zone Engine | Sprint 4 | [x] Completed | 2026-11-23 | KH |
-| **7** | `v0.8.0` | Smart Money Concepts (OB, FVG, Liquidity) | Sprint 5 | [ ] Pending | — | — |
+| **7** | `v0.8.0` | Smart Money Concepts (OB, FVG, Liquidity) | Sprint 5 | [x] Completed | 2026-11-24 | KH |
 | **8** | `v0.9.0` | Multi-Timeframe (MTF) Synchronization Engine | Sprint 6 | [ ] Pending | — | — |
 | **9** | `v1.0.0` | Production Hardening & Overnight Risk Guard | Sprint 7 | [ ] Pending | — | — |
 | **10** | `v1.1.0` | Institutional On-Chart Dashboard & GUI | Sprint 8 | [ ] Pending | — | — |
@@ -315,7 +315,7 @@ Replace naive single-line support/resistance with clustered, dynamic institution
 
 ### Phase 7: Smart Money Concepts (SMC) Core
 * **Version:** `v0.8.0`
-* **Status:** `[ ] Pending`
+* **Status:** `[x] Completed`
 * **Dependencies:** Phase 6
 
 #### Objective
@@ -334,8 +334,8 @@ Mathematically formalize Order Blocks, Fair Value Gaps (FVG / Imbalances), and L
   * **Liquidity Sweep:** Candle **wick** pierces swing high/low, but candle **body** closes back within the prior range.
 
 #### Acceptance Criteria
-- [ ] Visual inspection confirms exact match with institutional SMC definitions.
-- [ ] Mitigation state changes from `UNMITIGATED` $\to$ `PARTIALLY_FILLED` $\to$ `MITIGATED` reliably.
+- [x] Visual inspection confirms exact match with institutional SMC definitions.
+- [x] Mitigation state changes from `UNMITIGATED` $\to$ `PARTIALLY_FILLED` $\to$ `MITIGATED` reliably.
 
 ---
 

@@ -247,5 +247,29 @@ struct SFairValueGap
    }
 };
 
+//+------------------------------------------------------------------+
+//| Structure SLiquiditySweep                                        |
+//| Captured Stop-Run / Liquidity Sweep event                        |
+//+------------------------------------------------------------------+
+struct SLiquiditySweep
+{
+   ulong                 id;
+   bool                  isBullishSweep; // true = swept lows (bullish signal); false = swept highs (bearish)
+   double                sweepPrice;
+   double                extremeWickPrice;
+   datetime              time;
+   int                   barIndex;
+
+   SLiquiditySweep()
+   {
+      id               = 0;
+      isBullishSweep   = false;
+      sweepPrice       = 0.0;
+      extremeWickPrice = 0.0;
+      time             = 0;
+      barIndex         = -1;
+   }
+};
+
 #endif // __IMSF_TYPES_MQH__
 

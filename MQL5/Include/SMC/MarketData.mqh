@@ -174,6 +174,60 @@ public:
    }
 
    //+------------------------------------------------------------------+
+   //| Order Block Management                                           |
+   //+------------------------------------------------------------------+
+   bool AddOrderBlock(const SOrderBlock &ob)
+   {
+      m_obCount++;
+      ArrayResize(m_orderBlocks, m_obCount);
+      m_orderBlocks[m_obCount - 1] = ob;
+      return true;
+   }
+
+   int TotalOrderBlocks() const { return m_obCount; }
+
+   bool GetOrderBlock(const int index, SOrderBlock &outOB) const
+   {
+      if(index < 0 || index >= m_obCount)
+         return false;
+      outOB = m_orderBlocks[index];
+      return true;
+   }
+
+   void ClearOrderBlocks()
+   {
+      m_obCount = 0;
+      ArrayResize(m_orderBlocks, 0);
+   }
+
+   //+------------------------------------------------------------------+
+   //| Fair Value Gap (FVG) Management                                  |
+   //+------------------------------------------------------------------+
+   bool AddFVG(const SFairValueGap &fvg)
+   {
+      m_fvgCount++;
+      ArrayResize(m_fvgs, m_fvgCount);
+      m_fvgs[m_fvgCount - 1] = fvg;
+      return true;
+   }
+
+   int TotalFVGs() const { return m_fvgCount; }
+
+   bool GetFVG(const int index, SFairValueGap &outFVG) const
+   {
+      if(index < 0 || index >= m_fvgCount)
+         return false;
+      outFVG = m_fvgs[index];
+      return true;
+   }
+
+   void ClearFVGs()
+   {
+      m_fvgCount = 0;
+      ArrayResize(m_fvgs, 0);
+   }
+
+   //+------------------------------------------------------------------+
    //| Trend Bias Management                                            |
    //+------------------------------------------------------------------+
    void SetTrendBias(const ENUM_TREND_BIAS bias) { m_currentBias = bias; }

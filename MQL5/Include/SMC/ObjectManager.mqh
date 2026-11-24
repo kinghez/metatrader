@@ -14,7 +14,7 @@
 //+------------------------------------------------------------------+
 //| Class CObjectManager                                             |
 //| Decoupled presentation engine managing on-chart graphical        |
-//| objects (arrows, HH/HL/LH/LL text, OBJ_RECTANGLE zones, HUD)     |
+//| objects (arrows, structure text, zones, Order Blocks, FVGs, HUD) |
 //| with clean teardown and 100% headless bypass.                    |
 //+------------------------------------------------------------------+
 class CObjectManager
@@ -26,10 +26,16 @@ private:
    bool                 m_showLabels;
    bool                 m_showPoints;
    bool                 m_showZones;
+   bool                 m_showOrderBlocks;
+   bool                 m_showFVGs;
    color                m_highColor;
    color                m_lowColor;
    color                m_supplyColor;
    color                m_demandColor;
+   color                m_obBullishColor;
+   color                m_obBearishColor;
+   color                m_fvgBullishColor;
+   color                m_fvgBearishColor;
    int                  m_fontSize;
 
 public:
@@ -41,35 +47,17 @@ public:
       m_showLabels(InpShowSwingLabels),
       m_showPoints(InpShowSwingPoints),
       m_showZones(true),
+      m_showOrderBlocks(true),
+      m_showFVGs(true),
       m_highColor(InpSwingHighColor),
       m_lowColor(InpSwingLowColor),
-      m_supplyColor(C'255,190,190'), // Light translucent crimson
-      m_demandColor(C'190,240,190'), // Light translucent forest green
-      m_fontSize(InpLabelFontSize)
-   {
-   }
-
-   // Parameterized Constructor
-   CObjectManager(const long chartId,
-                  const string prefix,
-                  const bool enabled,
-                  const bool showLabels,
-                  const bool showPoints,
-                  const bool showZones,
-                  const color highColor,
-                  const color lowColor,
-                  const int fontSize) :
-      m_chartId(chartId),
-      m_prefix(prefix),
-      m_enabled(enabled),
-      m_showLabels(showLabels),
-      m_showPoints(showPoints),
-      m_showZones(showZones),
-      m_highColor(highColor),
-      m_lowColor(lowColor),
       m_supplyColor(C'255,190,190'),
       m_demandColor(C'190,240,190'),
-      m_fontSize(fontSize)
+      m_obBullishColor(C'160,220,255'),
+      m_obBearishColor(C'255,180,180'),
+      m_fvgBullishColor(C'200,240,255'),
+      m_fvgBearishColor(C'255,220,220'),
+      m_fontSize(InpLabelFontSize)
    {
    }
 
@@ -80,12 +68,14 @@ public:
    }
 
    // Configuration & Headless Control
-   void SetEnabled(const bool enabled)       { m_enabled = enabled; }
-   bool IsEnabled() const                    { return m_enabled; }
-   void SetPrefix(const string prefix)       { m_prefix = prefix; }
-   string GetPrefix() const                  { return m_prefix; }
-   void SetChartId(const long chartId)       { m_chartId = chartId; }
-   void SetShowZones(const bool show)        { m_showZones = show; }
+   void SetEnabled(const bool enabled)             { m_enabled = enabled; }
+   bool IsEnabled() const                          { return m_enabled; }
+   void SetPrefix(const string prefix)             { m_prefix = prefix; }
+   string GetPrefix() const                        { return m_prefix; }
+   void SetChartId(const long chartId)             { m_chartId = chartId; }
+   void SetShowZones(const bool show)              { m_showZones = show; }
+   void SetShowOrderBlocks(const bool show)        { m_showOrderBlocks = show; }
+   void SetShowFVGs(const bool show)               { m_showFVGs = show; }
 
    //+------------------------------------------------------------------+
    //| Cleanly deletes all framework objects on the target chart        |
@@ -109,7 +99,7 @@ public:
 
       string timeStr = IntegerToString((long)swing.Time());
 
-      // 1. Draw Pivot Arrow / Marker
+      // 1. Draw Pivot Arrow
       if(m_showPoints)
       {
          string arrowName = m_prefix + (swing.IsHigh() ? "ARW_H_" : "ARW_L_") + timeStr;
@@ -131,7 +121,7 @@ public:
          }
       }
 
-      // 2. Draw Structure Text Label (HH, HL, LH, LL)
+      // 2. Draw Structure Text Label
       if(m_showLabels && swing.StructureType() != STRUCTURE_NONE)
       {
          if((swing.StructureType() == STRUCTURE_HH && !InpShowHH) ||
@@ -176,7 +166,6 @@ public:
       string zoneName = m_prefix + "ZONE_" + ((zone.type == ZONE_SUPPLY) ? "SUP_" : "DEM_") + IntegerToString((long)zone.id);
       color  zoneColor = (zone.type == ZONE_SUPPLY) ? m_supplyColor : m_demandColor;
 
-      // Project zone forward into future candles
       long periodSec = PeriodSeconds(PERIOD_CURRENT);
       if(periodSec <= 0) periodSec = 3600;
       datetime futureTime = TimeCurrent() + (periodSec * 20);
@@ -187,7 +176,7 @@ public:
          ObjectSetInteger(m_chartId, zoneName, OBJPROP_COLOR, zoneColor);
          ObjectSetInteger(m_chartId, zoneName, OBJPROP_BGCOLOR, zoneColor);
          ObjectSetInteger(m_chartId, zoneName, OBJPROP_FILL, true);
-         ObjectSetInteger(m_chartId, zoneName, OBJPROP_BACK, true); // Render behind price candles
+         ObjectSetInteger(m_chartId, zoneName, OBJPROP_BACK, true);
          ObjectSetInteger(m_chartId, zoneName, OBJPROP_SELECTABLE, false);
          ObjectSetInteger(m_chartId, zoneName, OBJPROP_HIDDEN, true);
       }
@@ -200,59 +189,166 @@ public:
    }
 
    //+------------------------------------------------------------------+
-   //| Renders all swing points stored in MarketData                    |
+   //| Renders an institutional Order Block (OB)                        |
+   //+------------------------------------------------------------------+
+   void DrawOrderBlock(const SOrderBlock &ob)
+   {
+      if(!m_enabled || !m_showOrderBlocks || ob.isMitigated)
+         return;
+
+      string obName = m_prefix + "OB_" + (ob.isBullish ? "BULL_" : "BEAR_") + IntegerToString((long)ob.id);
+      color  obColor = ob.isBullish ? m_obBullishColor : m_obBearishColor;
+
+      long periodSec = PeriodSeconds(PERIOD_CURRENT);
+      if(periodSec <= 0) periodSec = 3600;
+      datetime futureTime = TimeCurrent() + (periodSec * 15);
+
+      if(ObjectFind(m_chartId, obName) < 0)
+      {
+         ObjectCreate(m_chartId, obName, OBJ_RECTANGLE, 0, ob.time, ob.highPrice, futureTime, ob.lowPrice);
+         ObjectSetInteger(m_chartId, obName, OBJPROP_COLOR, obColor);
+         ObjectSetInteger(m_chartId, obName, OBJPROP_BGCOLOR, obColor);
+         ObjectSetInteger(m_chartId, obName, OBJPROP_FILL, true);
+         ObjectSetInteger(m_chartId, obName, OBJPROP_BACK, true);
+         ObjectSetInteger(m_chartId, obName, OBJPROP_SELECTABLE, false);
+         ObjectSetInteger(m_chartId, obName, OBJPROP_HIDDEN, true);
+      }
+      else
+      {
+         ObjectSetDouble(m_chartId, obName, OBJPROP_PRICE, 0, ob.highPrice);
+         ObjectSetDouble(m_chartId, obName, OBJPROP_PRICE, 1, ob.lowPrice);
+         ObjectSetInteger(m_chartId, obName, OBJPROP_TIME, 1, futureTime);
+      }
+   }
+
+   //+------------------------------------------------------------------+
+   //| Renders a 3-candle Fair Value Gap (FVG)                          |
+   //+------------------------------------------------------------------+
+   void DrawFVG(const SFairValueGap &fvg)
+   {
+      if(!m_enabled || !m_showFVGs || fvg.state == STATE_MITIGATED)
+         return;
+
+      string fvgName = m_prefix + "FVG_" + (fvg.isBullish ? "BULL_" : "BEAR_") + IntegerToString((long)fvg.id);
+      color  fvgColor = fvg.isBullish ? m_fvgBullishColor : m_fvgBearishColor;
+
+      long periodSec = PeriodSeconds(PERIOD_CURRENT);
+      if(periodSec <= 0) periodSec = 3600;
+      datetime futureTime = TimeCurrent() + (periodSec * 10);
+
+      if(ObjectFind(m_chartId, fvgName) < 0)
+      {
+         ObjectCreate(m_chartId, fvgName, OBJ_RECTANGLE, 0, fvg.time, fvg.topPrice, futureTime, fvg.bottomPrice);
+         ObjectSetInteger(m_chartId, fvgName, OBJPROP_COLOR, fvgColor);
+         ObjectSetInteger(m_chartId, fvgName, OBJPROP_BGCOLOR, fvgColor);
+         ObjectSetInteger(m_chartId, fvgName, OBJPROP_FILL, true);
+         ObjectSetInteger(m_chartId, fvgName, OBJPROP_BACK, true);
+         ObjectSetInteger(m_chartId, fvgName, OBJPROP_SELECTABLE, false);
+         ObjectSetInteger(m_chartId, fvgName, OBJPROP_HIDDEN, true);
+      }
+      else
+      {
+         ObjectSetDouble(m_chartId, fvgName, OBJPROP_PRICE, 0, fvg.topPrice);
+         ObjectSetDouble(m_chartId, fvgName, OBJPROP_PRICE, 1, fvg.bottomPrice);
+         ObjectSetInteger(m_chartId, fvgName, OBJPROP_TIME, 1, futureTime);
+      }
+   }
+
+   //+------------------------------------------------------------------+
+   //| Renders a Liquidity Sweep alert marker                           |
+   //+------------------------------------------------------------------+
+   void DrawSweep(const SLiquiditySweep &sweep)
+   {
+      if(!m_enabled || sweep.time == 0)
+         return;
+
+      string sweepName = m_prefix + "SWEEP_" + IntegerToString((long)sweep.id);
+      string sweepText = sweep.isBullishSweep ? "▲ LIQ SWEEP (SELL-SIDE)" : "▼ LIQ SWEEP (BUY-SIDE)";
+      color  sweepColor = sweep.isBullishSweep ? m_highColor : m_lowColor;
+
+      if(ObjectFind(m_chartId, sweepName) < 0)
+      {
+         ObjectCreate(m_chartId, sweepName, OBJ_TEXT, 0, sweep.time, sweep.extremeWickPrice);
+         ObjectSetString(m_chartId, sweepName, OBJPROP_TEXT, sweepText);
+         ObjectSetString(m_chartId, sweepName, OBJPROP_FONT, "Arial Bold");
+         ObjectSetInteger(m_chartId, sweepName, OBJPROP_FONTSIZE, 9);
+         ObjectSetInteger(m_chartId, sweepName, OBJPROP_COLOR, sweepColor);
+         ObjectSetInteger(m_chartId, sweepName, OBJPROP_ANCHOR, sweep.isBullishSweep ? ANCHOR_UPPER : ANCHOR_LOWER);
+         ObjectSetInteger(m_chartId, sweepName, OBJPROP_SELECTABLE, false);
+         ObjectSetInteger(m_chartId, sweepName, OBJPROP_HIDDEN, true);
+      }
+   }
+
+   //+------------------------------------------------------------------+
+   //| Rendering Loops                                                  |
    //+------------------------------------------------------------------+
    void RenderAllSwings(const CMarketData &marketData)
    {
-      if(!m_enabled)
-         return;
-
+      if(!m_enabled) return;
       int total = marketData.TotalSwings();
       for(int i = 0; i < total; i++)
       {
          CSwingPoint* swing = marketData.GetSwing(i);
          if(CheckPointer(swing) != POINTER_INVALID)
-         {
             DrawSwingPoint(swing);
-         }
       }
       ChartRedraw(m_chartId);
    }
 
-   //+------------------------------------------------------------------+
-   //| Renders all active supply and demand zones                       |
-   //+------------------------------------------------------------------+
    void RenderAllZones(const CMarketData &marketData)
    {
-      if(!m_enabled || !m_showZones)
-         return;
-
+      if(!m_enabled || !m_showZones) return;
       int total = marketData.TotalZones();
       for(int i = 0; i < total; i++)
       {
          SZone z;
          if(marketData.GetZone(i, z))
-         {
             DrawZone(z);
-         }
+      }
+      ChartRedraw(m_chartId);
+   }
+
+   void RenderAllOrderBlocks(const CMarketData &marketData)
+   {
+      if(!m_enabled || !m_showOrderBlocks) return;
+      int total = marketData.TotalOrderBlocks();
+      for(int i = 0; i < total; i++)
+      {
+         SOrderBlock ob;
+         if(marketData.GetOrderBlock(i, ob))
+            DrawOrderBlock(ob);
+      }
+      ChartRedraw(m_chartId);
+   }
+
+   void RenderAllFVGs(const CMarketData &marketData)
+   {
+      if(!m_enabled || !m_showFVGs) return;
+      int total = marketData.TotalFVGs();
+      for(int i = 0; i < total; i++)
+      {
+         SFairValueGap f;
+         if(marketData.GetFVG(i, f))
+            DrawFVG(f);
       }
       ChartRedraw(m_chartId);
    }
 
    //+------------------------------------------------------------------+
-   //| On-chart Status HUD displaying Trend Bias and Structure Sequence |
+   //| On-chart Status HUD displaying Trend Bias and Full SMC Metrics   |
    //+------------------------------------------------------------------+
-   void DrawTrendBiasHUD(const ENUM_TREND_BIAS bias, const string sequence, const int swingsCount, const int zonesCount = 0)
+   void DrawTrendBiasHUD(const ENUM_TREND_BIAS bias, const string sequence, 
+                         const int swingsCount, const int zonesCount, 
+                         const int obCount, const int fvgCount)
    {
-      if(!m_enabled)
-         return;
+      if(!m_enabled) return;
 
       string hudName = m_prefix + "HUD_BIAS";
       string biasStr = (bias == BIAS_BULLISH) ? "BULLISH" : ((bias == BIAS_BEARISH) ? "BEARISH" : "NEUTRAL");
       color  biasClr = (bias == BIAS_BULLISH) ? m_highColor : ((bias == BIAS_BEARISH) ? m_lowColor : clrSilver);
 
-      string text = StringFormat("IMSF Market Structure: [%s] | Swings: %d | Active Zones: %d | Flow: %s",
-                                 biasStr, swingsCount, zonesCount, sequence);
+      string text = StringFormat("IMSF SMC: [%s] | Swings: %d | Zones: %d | OB: %d | FVG: %d | Flow: %s",
+                                 biasStr, swingsCount, zonesCount, obCount, fvgCount, sequence);
 
       if(ObjectFind(m_chartId, hudName) < 0)
       {
