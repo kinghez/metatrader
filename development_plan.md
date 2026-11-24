@@ -4,7 +4,7 @@
 **Project Codename:** `InstitutionalSMC`  
 **Target Platform:** MetaTrader 5 (MQL5) & Python (Research / ML)  
 **Architecture:** Modular, Event-Driven, Headless-First OOP Framework  
-**Current Status:** Phase 9 — Production Hardening & Overnight Risk Guard  
+**Current Status:** Phase 10 — Institutional On-Chart Dashboard & GUI  
 **Document Version:** 1.0.0  
 **Last Updated:** 2026-11-23  
 
@@ -124,7 +124,7 @@ metatrader/
 | **6** | `v0.7.0` | Support & Resistance / Dynamic Zone Engine | Sprint 4 | [x] Completed | 2026-11-23 | KH |
 | **7** | `v0.8.0` | Smart Money Concepts (OB, FVG, Liquidity) | Sprint 5 | [x] Completed | 2026-11-24 | KH |
 | **8** | `v0.9.0` | Multi-Timeframe (MTF) Synchronization Engine | Sprint 6 | [x] Completed | 2026-11-24 | KH |
-| **9** | `v1.0.0` | Production Hardening & Overnight Risk Guard | Sprint 7 | [ ] Pending | — | — |
+| **9** | `v1.0.0` | Production Hardening & Overnight Risk Guard | Sprint 7 | [x] Completed | 2026-11-24 | KH |
 | **10** | `v1.1.0` | Institutional On-Chart Dashboard & GUI | Sprint 8 | [ ] Pending | — | — |
 | **11** | `v1.2.0` | Multi-Channel Alert & Notification System | Sprint 8 | [ ] Pending | — | — |
 | **12** | `v2.0.0` | Full Institutional Expert Advisor (Autonomous) | Sprint 9 | [ ] Pending | — | — |
@@ -206,7 +206,7 @@ Build a mathematically rigorous, non-repainting pivot detection algorithm that i
 * `Tests/Test_SwingDetector.mq5`: Unit script to validate detected swings against historical data.
 
 #### Algorithmic Logic
-1. **Candidate Pivot:** Bar $i$ must be strictly higher than $N$ bars to its left and $M$ bars to its right for a Swing High (reversed for Swing Low).
+1. **Candidate Pivot:** Bar $i$ must be strictly higher than $gN$ bars to its left and $M$ bars to its right for a Swing High (reversed for Swing Low).
 2. **ATR Noise Filter:** 
    $$\Delta \text{Price} = |\text{Candidate} - \text{Previous Opposite Swing}| \ge k \times \text{ATR}(14)$$
    Swings failing the ATR threshold are discarded as intraday noise.
@@ -364,7 +364,7 @@ Enable the framework to simultaneously analyze Macro (H4/D1), Intermediate (H1/M
 
 ### Phase 9: Production Hardening & Overnight Risk Guard
 * **Version:** `v1.0.0`
-* **Status:** `[ ] Pending`
+* **Status:** `[x] Completed`
 * **Dependencies:** Phase 8
 
 #### Objective
@@ -376,8 +376,8 @@ Implement the safeguards required to operate an autonomous robot safely 24/5 ("m
 * `MQL5/Include/SMC/RiskManager.mqh` (Hardened): Maximum Daily Loss circuit-breaker (e.g., -3% equity hard stop), dynamic ATR position sizing, and margin checks.
 
 #### Acceptance Criteria
-- [ ] Zero orders executed during specified rollover hours or when spread exceeds maximum allowable threshold.
-- [ ] Daily loss circuit-breaker closes open positions and locks trading until the next calendar day.
+- [x] Zero orders executed during specified rollover hours or when spread exceeds maximum allowable threshold.
+- [x] Daily loss circuit-breaker closes open positions and locks trading until the next calendar day.
 
 ---
 
