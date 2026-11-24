@@ -80,12 +80,15 @@ public:
             MqlCalendarEvent event;
             if(CalendarEventById(values[i].event_id, event))
             {
-               // Check if event currency matches the symbol currency pairs
-               if(event.currency == baseCurr || event.currency == quoteCurr)
+               MqlCalendarCountry country;
+               if(CalendarCountryById(event.country_id, country))
                {
-                  if(!m_highImpactOnly || event.importance >= CALENDAR_IMPORTANCE_HIGH)
+                  if(country.currency == baseCurr || country.currency == quoteCurr)
                   {
-                     return true; // Blackout active
+                     if(!m_highImpactOnly || event.importance >= CALENDAR_IMPORTANCE_HIGH)
+                     {
+                        return true; // Blackout active
+                     }
                   }
                }
             }
