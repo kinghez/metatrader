@@ -5,7 +5,7 @@
 //+------------------------------------------------------------------+
 #property copyright   "Copyright 2026, InstitutionalSMC"
 #property link        "https://github.com/institutional-smc"
-#property version     "0.90"
+#property version     "1.00"
 #property description "Institutional Market Structure Framework (IMSF) - MTF Suite"
 #property indicator_chart_window
 #property indicator_buffers 0

@@ -168,7 +168,7 @@ public:
 
       long periodSec = PeriodSeconds(PERIOD_CURRENT);
       if(periodSec <= 0) periodSec = 3600;
-      datetime futureTime = TimeCurrent() + (periodSec * 20);
+      datetime futureTime = (datetime)(TimeCurrent() + (periodSec * 20));
 
       if(ObjectFind(m_chartId, zoneName) < 0)
       {
@@ -201,7 +201,7 @@ public:
 
       long periodSec = PeriodSeconds(PERIOD_CURRENT);
       if(periodSec <= 0) periodSec = 3600;
-      datetime futureTime = TimeCurrent() + (periodSec * 15);
+      datetime futureTime = (datetime)(TimeCurrent() + (periodSec * 15));
 
       if(ObjectFind(m_chartId, obName) < 0)
       {
@@ -234,7 +234,7 @@ public:
 
       long periodSec = PeriodSeconds(PERIOD_CURRENT);
       if(periodSec <= 0) periodSec = 3600;
-      datetime futureTime = TimeCurrent() + (periodSec * 10);
+      datetime futureTime = (datetime)(TimeCurrent() + (periodSec * 10));
 
       if(ObjectFind(m_chartId, fvgName) < 0)
       {
