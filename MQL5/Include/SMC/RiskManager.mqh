@@ -177,6 +177,17 @@ public:
       return true;
    }
 
+   double GetCurrentDailyLossPct()
+   {
+      CheckAndResetDailyBaseline();
+      if(m_startingDailyBalance <= 0.0)
+         return 0.0;
+      double currentEquity = AccountInfoDouble(ACCOUNT_EQUITY);
+      if(currentEquity >= m_startingDailyBalance)
+         return 0.0;
+      return ((m_startingDailyBalance - currentEquity) / m_startingDailyBalance) * 100.0;
+   }
+
    //+------------------------------------------------------------------+
    //| Production Hardening: Break-Even and Trailing Stop Engine        |
    //+------------------------------------------------------------------+

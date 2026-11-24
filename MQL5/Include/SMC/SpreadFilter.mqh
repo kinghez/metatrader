@@ -74,6 +74,16 @@ public:
       return (currentSpreadPips <= m_maxSpreadPips);
    }
 
+   bool IsSpreadPermissible(const string symbol) const
+   {
+      return IsSpreadAcceptable(symbol);
+   }
+
+   bool IsRolloverWindow() const
+   {
+      return IsInRolloverWindow();
+   }
+
    double GetCurrentSpreadPips(const string symbol) const
    {
       long spreadPoints = SymbolInfoInteger(symbol, SYMBOL_SPREAD);

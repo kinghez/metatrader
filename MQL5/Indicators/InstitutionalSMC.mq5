@@ -19,10 +19,12 @@
 #include <SMC/MarketData.mqh>
 #include <SMC/TimeframeManager.mqh>
 #include <SMC/ObjectManager.mqh>
+#include <SMC/Dashboard.mqh>
 
 //--- Global Engine Instances
 CTimeframeManager g_mtfManager;
 CObjectManager    g_objectManager;
+CDashboard        g_dashboard;
 datetime          g_lastBarTime = 0;
 
 //+------------------------------------------------------------------+
@@ -58,12 +60,21 @@ int OnInit()
       g_objectManager.RenderAllFVGs(*triggerData);
       g_objectManager.RenderAllSwings(*triggerData);
 
-      g_objectManager.DrawTrendBiasHUD(g_mtfManager.GetConfluenceBias(),
-                                      g_mtfManager.GetConfluenceSummary(),
-                                      triggerData.TotalSwings(),
-                                      triggerData.TotalZones(),
-                                      triggerData.TotalOrderBlocks(),
-                                      triggerData.TotalFVGs());
+      if(InpShowDashboard)
+      {
+         g_dashboard.Init(0, InpObjectNamePrefix + "DASH_", InpDashboardCorner, InpDashboardX, InpDashboardY, InpDashboardStartCollapsed);
+         g_dashboard.DeleteAllObjects();
+         g_dashboard.UpdateFromEngines(_Symbol, _Period, g_mtfManager, *triggerData);
+      }
+      else
+      {
+         g_objectManager.DrawTrendBiasHUD(g_mtfManager.GetConfluenceBias(),
+                                         g_mtfManager.GetConfluenceSummary(),
+                                         triggerData.TotalSwings(),
+                                         triggerData.TotalZones(),
+                                         triggerData.TotalOrderBlocks(),
+                                         triggerData.TotalFVGs());
+      }
    }
 
    Print(StringFormat("[IMSF] MTF Suite Initialized. Confluence: %s", g_mtfManager.GetConfluenceSummary()));
@@ -77,6 +88,8 @@ int OnInit()
 void OnDeinit(const int reason)
 {
    g_objectManager.DeleteAllObjects();
+   if(InpShowDashboard)
+      g_dashboard.DeleteAllObjects();
    Print("[IMSF] Deinitialized Institutional Market Structure Framework. Reason: ", reason);
 }
 
@@ -113,15 +126,34 @@ int OnCalculate(const int rates_total,
          g_objectManager.RenderAllFVGs(*triggerData);
          g_objectManager.RenderAllSwings(*triggerData);
 
-         g_objectManager.DrawTrendBiasHUD(g_mtfManager.GetConfluenceBias(),
-                                         g_mtfManager.GetConfluenceSummary(),
-                                         triggerData.TotalSwings(),
-                                         triggerData.TotalZones(),
-                                         triggerData.TotalOrderBlocks(),
-                                         triggerData.TotalFVGs());
+         if(InpShowDashboard)
+         {
+            g_dashboard.UpdateFromEngines(_Symbol, _Period, g_mtfManager, *triggerData);
+         }
+         else
+         {
+            g_objectManager.DrawTrendBiasHUD(g_mtfManager.GetConfluenceBias(),
+                                            g_mtfManager.GetConfluenceSummary(),
+                                            triggerData.TotalSwings(),
+                                            triggerData.TotalZones(),
+                                            triggerData.TotalOrderBlocks(),
+                                            triggerData.TotalFVGs());
+         }
       }
    }
 
    return(rates_total);
+}
+
+//+------------------------------------------------------------------+
+//| Chart event function (Interactive Dashboard clicks)             |
+//+------------------------------------------------------------------+
+void OnChartEvent(const int id,
+                  const long &lparam,
+                  const double &dparam,
+                  const string &sparam)
+{
+   if(InpShowDashboard)
+      g_dashboard.OnChartEvent(id, lparam, dparam, sparam);
 }
 //+------------------------------------------------------------------+

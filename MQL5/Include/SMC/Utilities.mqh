@@ -144,6 +144,39 @@ public:
          default:         return "NONE";
       }
    }
+
+   //+------------------------------------------------------------------+
+   //| Converts Trend Bias enum to string                               |
+   //+------------------------------------------------------------------+
+   static string BiasToString(const ENUM_TREND_BIAS bias)
+   {
+      switch(bias)
+      {
+         case BIAS_BULLISH: return "BULLISH";
+         case BIAS_BEARISH: return "BEARISH";
+         default:           return "NEUTRAL";
+      }
+   }
+
+   //+------------------------------------------------------------------+
+   //| Converts Timeframe enum to compact string                        |
+   //+------------------------------------------------------------------+
+   static string PeriodToString(const ENUM_TIMEFRAMES tf)
+   {
+      switch(tf)
+      {
+         case PERIOD_M1:  return "M1";
+         case PERIOD_M5:  return "M5";
+         case PERIOD_M15: return "M15";
+         case PERIOD_M30: return "M30";
+         case PERIOD_H1:  return "H1";
+         case PERIOD_H4:  return "H4";
+         case PERIOD_D1:  return "D1";
+         case PERIOD_W1:  return "W1";
+         case PERIOD_MN1: return "MN1";
+         default:         return EnumToString(tf);
+      }
+   }
 };
 
 #endif // __IMSF_UTILITIES_MQH__

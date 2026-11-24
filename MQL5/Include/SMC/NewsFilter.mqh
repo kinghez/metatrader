@@ -98,6 +98,11 @@ public:
       return false;
    }
 
+   bool IsNewsClear(const string symbol)
+   {
+      return !IsNewsBlackoutActive(symbol);
+   }
+
    // Diagnostic: Queries if any major event is coming up in next lookahead window
    bool GetUpcomingMajorEvent(const string symbol, string &outEventName, datetime &outEventTime)
    {

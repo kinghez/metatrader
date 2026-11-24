@@ -208,6 +208,13 @@ public:
    ENUM_TREND_BIAS GetConfluenceBias() const      { return m_confluenceBias; }
    int             GetConfluenceScore() const     { return m_confluenceScore; }
 
+   ENUM_TREND_BIAS GetBias(const ENUM_TIMEFRAMES tf) const
+   {
+      if(tf == m_macroTF) return GetMacroBias();
+      if(tf == m_setupTF) return GetSetupBias();
+      return GetTriggerBias();
+   }
+
    bool IsBullishConfluence() const               { return (m_confluenceBias == BIAS_BULLISH); }
    bool IsBearishConfluence() const               { return (m_confluenceBias == BIAS_BEARISH); }
 

@@ -24,12 +24,17 @@ input bool   InpShowLL                 = true;          // Show Lower Lows (LL)
 
 //--- 3. Visual & Object Manager Inputs
 input group "=== 3. Chart Visualization ==="
-input bool   InpShowSwingLabels        = true;          // Render Structure Labels (HH/HL/LH/LL)
-input bool   InpShowSwingPoints        = true;          // Render Swing Arrows/Dots
-input color  InpSwingHighColor         = clrDodgerBlue; // Swing High & Bullish Color
-input color  InpSwingLowColor          = clrOrangeRed;  // Swing Low & Bearish Color
-input int    InpLabelFontSize          = 9;             // Label Font Size
-input string InpObjectNamePrefix       = "IMSF_";       // Unique Chart Object Prefix
+input bool             InpShowSwingLabels        = true;              // Render Structure Labels (HH/HL/LH/LL)
+input bool             InpShowSwingPoints        = true;              // Render Swing Arrows/Dots
+input color            InpSwingHighColor         = clrDodgerBlue;     // Swing High & Bullish Color
+input color            InpSwingLowColor          = clrOrangeRed;      // Swing Low & Bearish Color
+input int              InpLabelFontSize          = 9;                 // Label Font Size
+input string           InpObjectNamePrefix       = "IMSF_";           // Unique Chart Object Prefix
+input bool             InpShowDashboard          = true;              // Show Institutional HUD Dashboard
+input bool             InpDashboardStartCollapsed= false;             // Start Dashboard Collapsed
+input ENUM_BASE_CORNER InpDashboardCorner        = CORNER_LEFT_UPPER; // Dashboard Screen Corner
+input int              InpDashboardX             = 15;                // Dashboard X Offset (Pixels)
+input int              InpDashboardY             = 25;                // Dashboard Y Offset (Pixels)
 
 //--- 4. Execution & Risk Management (For EA)
 input group "=== 4. Risk & Execution Configuration ==="

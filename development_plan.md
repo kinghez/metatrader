@@ -125,7 +125,7 @@ metatrader/
 | **7** | `v0.8.0` | Smart Money Concepts (OB, FVG, Liquidity) | Sprint 5 | [x] Completed | 2026-11-24 | KH |
 | **8** | `v0.9.0` | Multi-Timeframe (MTF) Synchronization Engine | Sprint 6 | [x] Completed | 2026-11-24 | KH |
 | **9** | `v1.0.0` | Production Hardening & Overnight Risk Guard | Sprint 7 | [x] Completed | 2026-11-24 | KH |
-| **10** | `v1.1.0` | Institutional On-Chart Dashboard & GUI | Sprint 8 | [ ] Pending | — | — |
+| **10** | `v1.1.0` | Institutional On-Chart Dashboard & GUI | Sprint 8 | [x] Completed | 2026-11-24 | KH |
 | **11** | `v1.2.0` | Multi-Channel Alert & Notification System | Sprint 8 | [ ] Pending | — | — |
 | **12** | `v2.0.0` | Full Institutional Expert Advisor (Autonomous) | Sprint 9 | [ ] Pending | — | — |
 | **13** | `v3.0.0` | Python Integration, Feature Export & ML Model | Sprint 10 | [ ] Pending | — | — |
@@ -383,7 +383,7 @@ Implement the safeguards required to operate an autonomous robot safely 24/5 ("m
 
 ### Phase 10: Institutional On-Chart Dashboard & GUI
 * **Version:** `v1.1.0`
-* **Status:** `[ ] Pending`
+* **Status:** `[x] Completed`
 * **Dependencies:** Phase 9
 
 #### Objective
@@ -393,8 +393,8 @@ Design an institutional Heads-Up Display (HUD) on the chart showing real-time ma
 * `MQL5/Include/SMC/Dashboard.mqh`: Clean, non-intrusive dashboard rendering spread, daily PnL, active bias across M15/H1/H4, and nearest liquidity targets.
 
 #### Acceptance Criteria
-- [ ] High-DPI screen compatible (4K display support).
-- [ ] Collapsible with a single click to avoid obstructing price action.
+- [x] High-DPI screen compatible (4K display support).
+- [x] Collapsible with a single click to avoid obstructing price action.
 
 ---
 

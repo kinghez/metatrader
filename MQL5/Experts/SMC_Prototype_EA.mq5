@@ -19,6 +19,7 @@
 #include <SMC/MarketData.mqh>
 #include <SMC/TimeframeManager.mqh>
 #include <SMC/ObjectManager.mqh>
+#include <SMC/Dashboard.mqh>
 #include <SMC/RiskManager.mqh>
 #include <SMC/SpreadFilter.mqh>
 #include <SMC/NewsFilter.mqh>
@@ -44,6 +45,7 @@ input double InpTrailingStopAtrMult    = 1.5;        // Trailing Stop Buffer (AT
 CTrade            g_trade;
 CTimeframeManager g_mtfManager;
 CObjectManager    g_objectManager;
+CDashboard        g_dashboard;
 CRiskManager      g_riskManager;
 CSpreadFilter     g_spreadFilter;
 CNewsFilter       g_newsFilter;
@@ -92,12 +94,21 @@ int OnInit()
       g_objectManager.RenderAllFVGs(*triggerData);
       g_objectManager.RenderAllSwings(*triggerData);
 
-      g_objectManager.DrawTrendBiasHUD(g_mtfManager.GetConfluenceBias(),
-                                      g_mtfManager.GetConfluenceSummary(),
-                                      triggerData.TotalSwings(),
-                                      triggerData.TotalZones(),
-                                      triggerData.TotalOrderBlocks(),
-                                      triggerData.TotalFVGs());
+      if(InpShowDashboard)
+      {
+         g_dashboard.Init(0, InpObjectNamePrefix + "DASH_", InpDashboardCorner, InpDashboardX, InpDashboardY, InpDashboardStartCollapsed);
+         g_dashboard.DeleteAllObjects();
+         g_dashboard.UpdateFromEngines(_Symbol, _Period, g_mtfManager, *triggerData, &g_riskManager, &g_spreadFilter, &g_newsFilter, CountOpenPositions());
+      }
+      else
+      {
+         g_objectManager.DrawTrendBiasHUD(g_mtfManager.GetConfluenceBias(),
+                                         g_mtfManager.GetConfluenceSummary(),
+                                         triggerData.TotalSwings(),
+                                         triggerData.TotalZones(),
+                                         triggerData.TotalOrderBlocks(),
+                                         triggerData.TotalFVGs());
+      }
    }
 
    Print(StringFormat("[IMSF EA] Production Hardened EA Ready. Confluence: %s", g_mtfManager.GetConfluenceSummary()));
@@ -110,7 +121,11 @@ int OnInit()
 void OnDeinit(const int reason)
 {
    if(InpEnableVisuals)
+   {
       g_objectManager.DeleteAllObjects();
+      if(InpShowDashboard)
+         g_dashboard.DeleteAllObjects();
+   }
 
    Print("[IMSF EA] Deinitialized. Reason: ", reason);
 }
@@ -165,12 +180,19 @@ void OnTick()
       g_objectManager.RenderAllFVGs(*triggerData);
       g_objectManager.RenderAllSwings(*triggerData);
 
-      g_objectManager.DrawTrendBiasHUD(g_mtfManager.GetConfluenceBias(),
-                                      g_mtfManager.GetConfluenceSummary(),
-                                      triggerData.TotalSwings(),
-                                      triggerData.TotalZones(),
-                                      triggerData.TotalOrderBlocks(),
-                                      triggerData.TotalFVGs());
+      if(InpShowDashboard)
+      {
+         g_dashboard.UpdateFromEngines(_Symbol, _Period, g_mtfManager, *triggerData, &g_riskManager, &g_spreadFilter, &g_newsFilter, CountOpenPositions());
+      }
+      else
+      {
+         g_objectManager.DrawTrendBiasHUD(g_mtfManager.GetConfluenceBias(),
+                                         g_mtfManager.GetConfluenceSummary(),
+                                         triggerData.TotalSwings(),
+                                         triggerData.TotalZones(),
+                                         triggerData.TotalOrderBlocks(),
+                                         triggerData.TotalFVGs());
+      }
    }
 
    // 5. Production Hardening Safeguards:
@@ -251,5 +273,17 @@ void OnTick()
          }
       }
    }
+}
+
+//+------------------------------------------------------------------+
+//| Chart event function (Interactive Dashboard clicks)             |
+//+------------------------------------------------------------------+
+void OnChartEvent(const int id,
+                  const long &lparam,
+                  const double &dparam,
+                  const string &sparam)
+{
+   if(InpEnableVisuals && InpShowDashboard)
+      g_dashboard.OnChartEvent(id, lparam, dparam, sparam);
 }
 //+------------------------------------------------------------------+
