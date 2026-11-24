@@ -241,3 +241,4 @@ public:
 };
 
 #endif // __IMSF_TIMEFRAMEMANAGER_MQH__
+
