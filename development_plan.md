@@ -4,7 +4,7 @@
 **Project Codename:** `InstitutionalSMC`  
 **Target Platform:** MetaTrader 5 (MQL5) & Python (Research / ML)  
 **Architecture:** Modular, Event-Driven, Headless-First OOP Framework  
-**Current Status:** Phase 8 — Multi-Timeframe (MTF) Synchronization Engine  
+**Current Status:** Phase 9 — Production Hardening & Overnight Risk Guard  
 **Document Version:** 1.0.0  
 **Last Updated:** 2026-11-23  
 
@@ -123,7 +123,7 @@ metatrader/
 | **5** | `v0.6.0` | Fast-Track Execution Baseline (Prototype EA) | Sprint 3 | [x] Completed | 2026-11-23 | KH |
 | **6** | `v0.7.0` | Support & Resistance / Dynamic Zone Engine | Sprint 4 | [x] Completed | 2026-11-23 | KH |
 | **7** | `v0.8.0` | Smart Money Concepts (OB, FVG, Liquidity) | Sprint 5 | [x] Completed | 2026-11-24 | KH |
-| **8** | `v0.9.0` | Multi-Timeframe (MTF) Synchronization Engine | Sprint 6 | [ ] Pending | — | — |
+| **8** | `v0.9.0` | Multi-Timeframe (MTF) Synchronization Engine | Sprint 6 | [x] Completed | 2026-11-24 | KH |
 | **9** | `v1.0.0` | Production Hardening & Overnight Risk Guard | Sprint 7 | [ ] Pending | — | — |
 | **10** | `v1.1.0` | Institutional On-Chart Dashboard & GUI | Sprint 8 | [ ] Pending | — | — |
 | **11** | `v1.2.0` | Multi-Channel Alert & Notification System | Sprint 8 | [ ] Pending | — | — |
@@ -341,7 +341,7 @@ Mathematically formalize Order Blocks, Fair Value Gaps (FVG / Imbalances), and L
 
 ### Phase 8: Multi-Timeframe (MTF) Synchronization Engine
 * **Version:** `v0.9.0`
-* **Status:** `[ ] Pending`
+* **Status:** `[x] Completed`
 * **Dependencies:** Phase 7
 
 #### Objective
@@ -357,8 +357,8 @@ Enable the framework to simultaneously analyze Macro (H4/D1), Intermediate (H1/M
 * **Tier 3 (Trigger - M5/M1):** Pinpoints the refined entry on internal FVG retest with tight invalidation.
 
 #### Acceptance Criteria
-- [ ] Handles un-downloaded history gracefully without freezing MT5 terminal.
-- [ ] Provides unified structure state: `TimeframeManager.GetBias(PERIOD_H4)`.
+- [x] Handles un-downloaded history gracefully without freezing MT5 terminal.
+- [x] Provides unified structure state: `TimeframeManager.GetBias(PERIOD_H4)`.
 
 ---
 
