@@ -4,7 +4,7 @@
 **Project Codename:** `InstitutionalSMC`  
 **Target Platform:** MetaTrader 5 (MQL5) & Python (Research / ML)  
 **Architecture:** Modular, Event-Driven, Headless-First OOP Framework  
-**Current Status:** Phase 4 — Headless Verification & Lightweight Visualization  
+**Current Status:** Phase 7 — Smart Money Concepts (OB, FVG, Liquidity)  
 **Document Version:** 1.0.0  
 **Last Updated:** 2026-11-23  
 
@@ -119,9 +119,9 @@ metatrader/
 | **1** | `v0.2.0` | Foundation Layer & Core Data Structures | Sprint 1 | [x] Completed | 2026-11-23 | KH |
 | **2** | `v0.3.0` | Non-Repainting Swing Detection Engine | Sprint 1 | [x] Completed | 2026-11-23 | KH |
 | **3** | `v0.4.0` | Market Structure Classification (HH/HL/LH/LL) | Sprint 2 | [x] Completed | 2026-11-23 | KH |
-| **4** | `v0.5.0` | Headless Verification & Lightweight Visualization | Sprint 2 | [ ] Pending | — | — |
-| **5** | `v0.6.0` | Fast-Track Execution Baseline (Prototype EA) | Sprint 3 | [ ] Pending | — | — |
-| **6** | `v0.7.0` | Support & Resistance / Dynamic Zone Engine | Sprint 4 | [ ] Pending | — | — |
+| **4** | `v0.5.0` | Headless Verification & Lightweight Visualization | Sprint 2 | [x] Completed | 2026-11-23 | KH |
+| **5** | `v0.6.0` | Fast-Track Execution Baseline (Prototype EA) | Sprint 3 | [x] Completed | 2026-11-23 | KH |
+| **6** | `v0.7.0` | Support & Resistance / Dynamic Zone Engine | Sprint 4 | [x] Completed | 2026-11-23 | KH |
 | **7** | `v0.8.0` | Smart Money Concepts (OB, FVG, Liquidity) | Sprint 5 | [ ] Pending | — | — |
 | **8** | `v0.9.0` | Multi-Timeframe (MTF) Synchronization Engine | Sprint 6 | [ ] Pending | — | — |
 | **9** | `v1.0.0` | Production Hardening & Overnight Risk Guard | Sprint 7 | [ ] Pending | — | — |
@@ -247,7 +247,7 @@ Automatically evaluate consecutive confirmed swings and classify market structur
 
 ### Phase 4: Headless Verification & Lightweight Visualization
 * **Version:** `v0.5.0`
-* **Status:** `[ ] Pending`
+* **Status:** `[x] Completed`
 * **Dependencies:** Phase 3
 
 #### Objective
@@ -258,15 +258,15 @@ Implement `ObjectManager.mqh` to render visual arrows, labels (HH, HL, LH, LL), 
 * `MQL5/Indicators/InstitutionalSMC.mq5`: Working MT5 indicator overlaying structure on live charts.
 
 #### Acceptance Criteria
-- [ ] Removing indicator cleanly deletes 100% of created chart objects without leaving artifacts.
-- [ ] Indicator loads and responds smoothly during timeframe changes.
-- [ ] Switching off visual settings (`ShowVisualObjects = false`) stops all GDI calls and runs at native CPU speed.
+- [x] Removing indicator cleanly deletes 100% of created chart objects without leaving artifacts.
+- [x] Indicator loads and responds smoothly during timeframe changes.
+- [x] Switching off visual settings (`ShowVisualObjects = false`) stops all GDI calls and runs at native CPU speed.
 
 ---
 
 ### Phase 5: Fast-Track Execution Baseline (Prototype EA)
 * **Version:** `v0.6.0`
-* **Status:** `[ ] Pending`
+* **Status:** `[x] Completed`
 * **Dependencies:** Phase 4
 
 #### Objective
@@ -282,14 +282,14 @@ Validate that market structure data can drive profitable, automated trade execut
 * **Take Profit:** Minimum $2.0 \times \text{Risk}$.
 
 #### Acceptance Criteria
-- [ ] Prototype EA runs in MT5 Strategy Tester across 1 year of tick data without crashes, division-by-zero, or order errors.
-- [ ] Confirms that trading based on confirmed structure produces positive expectancy or clear optimization baselines.
+- [x] Prototype EA runs in MT5 Strategy Tester across 1 year of tick data without crashes, division-by-zero, or order errors.
+- [x] Confirms that trading based on confirmed structure produces positive expectancy or clear optimization baselines.
 
 ---
 
 ### Phase 6: Support & Resistance / Dynamic Zone Engine
 * **Version:** `v0.7.0`
-* **Status:** `[ ] Pending`
+* **Status:** `[x] Completed`
 * **Dependencies:** Phase 5
 
 #### Objective
@@ -308,8 +308,8 @@ Replace naive single-line support/resistance with clustered, dynamic institution
 | **Timeframe Weight** | 20% | D1/H4 zones receive full score; M15/M5 receive lower baseline score. |
 
 #### Acceptance Criteria
-- [ ] Overlapping or adjacent zones within $1.0 \times \text{ATR}$ automatically merge into a single consolidated zone.
-- [ ] Zones that are thoroughly penetrated by candle closes are marked as `MITIGATED` or deleted.
+- [x] Overlapping or adjacent zones within $1.0 \times \text{ATR}$ automatically merge into a single consolidated zone.
+- [x] Zones that are thoroughly penetrated by candle closes are marked as `MITIGATED` or deleted.
 
 ---
 
